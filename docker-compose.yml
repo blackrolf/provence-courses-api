@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: provence-courses-api
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - OSRM_URL=http://osrm:5000
+      - API_KEY=${API_KEY}
+      - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY:-}
+    depends_on:
+      - osrm
+    restart: unless-stopped
+    networks:
+      - provence-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  osrm:
+    image: osrm/osrm-backend
+    container_name: osrm-paca
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./osrm-data:/data
+    command: osrm-routed --algorithm mld /data/provence-alpes-cote-d-azur-latest.osrm
+    restart: unless-stopped
+    networks:
+      - provence-network
+
+networks:
+  provence-network:
+    driver: bridge

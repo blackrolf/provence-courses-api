@@ -1,0 +1,42 @@
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.idea/
+.vscode/
+.claude/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Test data
+*.json
+osrm-data/
+
+# Documentation (not needed in container)
+*.md
+docs/
+
+# Deployment configs (not needed in container)
+deployment/
+
+# Tests (not needed in production)
+tests/
