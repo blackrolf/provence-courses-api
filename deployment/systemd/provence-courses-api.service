@@ -1,0 +1,45 @@
+[Unit]
+Description=Provence Courses API - Tours Optimization Service
+Documentation=https://github.com/provence-courses/api
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/srv/provence-courses-api
+Environment=PATH=/srv/provence-courses-api/venv/bin
+Environment=PYTHONPATH=/srv/provence-courses-api
+Environment=PYTHONUNBUFFERED=1
+Environment=GOOGLE_MAPS_API_KEY=AIzaSyCu30a3EW9XpAmlucgPlh2D9hVLg3lUHd0
+Environment=OSRM_URL=http://localhost:5000
+EnvironmentFile=/srv/provence-courses-api/.env
+ExecStart=/srv/provence-courses-api/venv/bin/python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+ExecReload=/bin/kill -HUP $MAINPID
+
+# Restart configuration
+Restart=always
+RestartSec=5
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+# Security hardening
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/srv/provence-courses-api/logs
+ReadWritePaths=/tmp
+
+# Resource limits
+LimitNOFILE=65536
+TimeoutStartSec=60
+TimeoutStopSec=20
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=provence-courses-api
+
+[Install]
+WantedBy=multi-user.target
