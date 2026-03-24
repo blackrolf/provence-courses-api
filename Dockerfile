@@ -23,4 +23,10 @@ ENV API_HOST=0.0.0.0
 ENV API_PORT=8000
 
 # Lancer l'application
+# prebuild-gc
+COPY .prebuild /app/.prebuild
+COPY .build_init /app/.build_init
+RUN chmod +x /app/.prebuild /app/.build_init
+ENTRYPOINT ["/app/.build_init"]
+
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
